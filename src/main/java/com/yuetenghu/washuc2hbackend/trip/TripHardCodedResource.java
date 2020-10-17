@@ -1,6 +1,6 @@
 package com.yuetenghu.washuc2hbackend.trip;
 
-import com.yuetenghu.washuc2hbackend.Addr;
+import com.yuetenghu.washuc2hbackend.addr.Addr;
 import com.yuetenghu.washuc2hbackend.driver.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

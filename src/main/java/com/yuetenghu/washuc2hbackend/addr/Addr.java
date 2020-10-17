@@ -1,11 +1,18 @@
-package com.yuetenghu.washuc2hbackend;
+package com.yuetenghu.washuc2hbackend.addr;
 
+import com.yuetenghu.washuc2hbackend.trip.Trip;
+
+import javax.persistence.*;
 import java.util.Calendar;
 
+@Entity
 public class Addr {
+
+    @Id
+    @GeneratedValue
     private int id;  // TODO change to increment id; Annotation of JPA?
-    private final int riderId;
-    private final int tripId;
+    private int riderId;
+    // private int tripId;
     private String addr;
     private double lat;
     private double lng;
@@ -14,10 +21,22 @@ public class Addr {
     private Calendar arrivalTime;  // TODO what type to use; Consider Timezone
     private static int idCounter = 1;
 
-    public Addr(int riderId, int tripId, String addr, double lat, double lng) {
-        this.id = idCounter++;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Trip trip;
+
+    // public Trip getTrip() {
+    //     return trip;
+    // }
+
+    public void setTrip(Trip trip) {this.trip = trip;}
+
+    protected Addr() {
+
+    }
+
+    public Addr(int riderId, /*int tripId,*/ String addr, double lat, double lng) {
         this.riderId = riderId;
-        this.tripId = tripId;
+        // this.tripId = tripId;
         this.addr = addr;
         this.lat = lat;
         this.lng = lng;
@@ -40,7 +59,7 @@ public class Addr {
 
     public int getId() {return this.id;}
     public int getRiderId() {return this.riderId;}
-    public int getTripId() {return this.tripId;}
+    // public int getTripId() {return this.tripId;}
     public String getAddr() {return this.addr;}
     public double getLat() {return this.lat;}
     public double getLng() {return this.lng;}
@@ -48,6 +67,12 @@ public class Addr {
     public Calendar getBoardingTime() {return this.boardingTime;}
     public Calendar getArrivalTime() {return this.arrivalTime;}
 
+    public void setBoardingTime() {this.setBoardingTime(Calendar.getInstance());}
+    public void setBoardingTime(Calendar boardingTime) {
+        if (this.boardingTime != null) {
+            this.boardingTime = boardingTime;
+        }
+    }
     public void setArrivalTime() {
         this.setArrivalTime(Calendar.getInstance());
     }

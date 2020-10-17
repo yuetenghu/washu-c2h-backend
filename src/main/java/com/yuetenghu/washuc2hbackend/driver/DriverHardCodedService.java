@@ -12,7 +12,7 @@ public class DriverHardCodedService {
     private static List<Driver> drivers = new ArrayList<>();
 
     static {
-        drivers.add(new Driver(22, "Who", "Doctor"));
+        drivers.add(new Driver("Who", "Doctor"));
     }
 
     public Driver findByNames(String surname, String givenName) {

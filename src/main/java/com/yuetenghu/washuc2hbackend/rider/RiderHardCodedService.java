@@ -16,7 +16,7 @@ public class RiderHardCodedService {
 
     public Rider save(Rider rider) {
         // TODO: rider.getStatus()/getStation() might not work for JS
-        Rider createdRider = new Rider(idCounter++, rider.getSurname(), rider.getGivenName(), rider.getStatus(), rider.getStation());
+        Rider createdRider = new Rider(rider.getSurname(), rider.getGivenName(), rider.getStatus(), rider.getStation());
         riders.add(createdRider);
         return createdRider;
     }

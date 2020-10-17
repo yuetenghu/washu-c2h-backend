@@ -1,12 +1,11 @@
 package com.yuetenghu.washuc2hbackend.rider;
 
 import com.yuetenghu.washuc2hbackend.Account;
-import com.yuetenghu.washuc2hbackend.Addr;
 import com.yuetenghu.washuc2hbackend.PeopleEnRoute;
-import com.yuetenghu.washuc2hbackend.trip.Trip;
 
-import java.util.Calendar;
+import javax.persistence.*;
 
+@Entity
 public class Rider extends Account implements PeopleEnRoute {
 
     public static enum Status {
@@ -20,11 +19,17 @@ public class Rider extends Account implements PeopleEnRoute {
         HOYT_FORSYTH
     }
 
-    private final Status status;
-    private final Station station;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    @Enumerated(EnumType.STRING)
+    private Station station;
 
-    public Rider(int id, String surname, String givenName, Status status, Station station) {
-        super(id, surname, givenName);
+    protected Rider() {
+
+    }
+
+    public Rider(String surname, String givenName, Status status, Station station) {
+        super(surname, givenName);
         this.status = status;
         this.station = station;
     }

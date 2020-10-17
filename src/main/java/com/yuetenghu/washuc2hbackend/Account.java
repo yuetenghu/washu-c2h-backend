@@ -1,26 +1,28 @@
 package com.yuetenghu.washuc2hbackend;
 
+import javax.persistence.*;
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Account {
 
-    private final int id;
-    private final String surname;
-    private final String givenName;
+    @Id
+    @GeneratedValue
+    private Integer id;
 
-    public Account(int id, String surname, String givenName) {
-        this.id = id;
+    private String surname;
+    private String givenName;
+
+    protected Account() {
+
+    }
+
+    public Account(String surname, String givenName) {
         this.surname = surname;
         this.givenName = givenName;
     }
 
-    public String getSurname() {
-        return this.surname;
-    };
-
-    public String getGivenName() {
-        return this.givenName;
-    }
-
-    public int getId() {
-        return this.id;
-    }
+    public Integer getId() {return this.id;}
+    public String getSurname() {return this.surname;};
+    public String getGivenName() {return this.givenName;}
 }
