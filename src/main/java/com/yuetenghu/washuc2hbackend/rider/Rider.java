@@ -11,7 +11,7 @@ public class Rider extends Account implements PeopleEnRoute {
     public static enum Status {
         GRAD,
         UNDERGRAD,
-        EMPLOYEE
+        STAFF
     }
 
     public static enum Station {
