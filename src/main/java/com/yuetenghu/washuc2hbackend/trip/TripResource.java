@@ -1,6 +1,5 @@
 package com.yuetenghu.washuc2hbackend.trip;
 
-import com.yuetenghu.washuc2hbackend.addr.Addr;
 import com.yuetenghu.washuc2hbackend.driver.Driver;
 import com.yuetenghu.washuc2hbackend.driver.DriverJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "https://localhost:4200")
+// @CrossOrigin(origins = {"https://localhost:4200", "https://localhost:8000"})
+@CrossOrigin
 public class TripResource {
 
     @Autowired
@@ -69,30 +70,26 @@ public class TripResource {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    // Moved to AddrResource
-    // @PostMapping("jpa/rider/trip/{tripId}/addr/new")
-    // public ResponseEntity<Addr> createAddr(@PathVariable int tripId, @RequestBody Addr addr) {
-    //     Trip foundTrip = tripOldService.findById(tripId);
-    //     if (foundTrip != null) {
-    //         Addr createdAddr = foundTrip.addAddr(addr);
-    //         return new ResponseEntity<>(createdAddr, HttpStatus.OK);
-    //     }
-    //     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    // }
+    public static class TripRouteSeqIds {
+        int tripId;
+        ArrayList<Integer> seqIds;
 
-    // Moved to AddrResource
-    // @PutMapping("jpa/driver/trip/{tripId}/addr/{addrId}")
-    // public ResponseEntity<Addr> updateAddr(@PathVariable int tripId, @PathVariable int addrId) {
-    //     Trip foundTrip = tripOldService.findById(tripId);
-    //     if (foundTrip != null) {
-    //         Addr foundAddr = foundTrip.findAddr(addrId); {
-    //             if (foundAddr != null) {
-    //                 foundAddr.setArrivalTime();
-    //                 return new ResponseEntity<>(foundAddr, HttpStatus.OK);
-    //             }
-    //         }
-    //     }
-    //     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    // }
+        public int getTripId() {return tripId;}
+        public ArrayList<Integer> getSeqIds() {return seqIds;}
+        public void setTripId(int tripId) {this.tripId = tripId;}
+        public void setSeqIds(ArrayList<Integer> seqIds) {this.seqIds = seqIds;}
+    }
+
+    @PostMapping("jpa/system/trip/{id}/update-route")
+    public ResponseEntity<Trip> updateTripRoute(@PathVariable int id, @RequestBody TripRouteSeqIds tripRouteSeqIds) {
+        Optional<Trip> foundTrip = tripService.findById(id);
+        if (foundTrip.isPresent()) {
+            foundTrip.get().updateRoute(tripRouteSeqIds.seqIds);
+            tripService.save(foundTrip.get());
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 
 }

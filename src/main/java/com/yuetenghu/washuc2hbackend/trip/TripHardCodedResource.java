@@ -1,5 +1,6 @@
 package com.yuetenghu.washuc2hbackend.trip;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yuetenghu.washuc2hbackend.addr.Addr;
 import com.yuetenghu.washuc2hbackend.driver.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,15 +53,15 @@ public class TripHardCodedResource {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("rider/trip/{tripId}/addr/new")
-    public ResponseEntity<Addr> createAddr(@PathVariable int tripId, @RequestBody Addr addr) {
-        Trip foundTrip = tripService.findById(tripId);
-        if (foundTrip != null) {
-            Addr createdAddr = foundTrip.addAddr(addr);
-            return new ResponseEntity<>(createdAddr, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    // @PostMapping("rider/trip/{tripId}/addr/new")
+    // public ResponseEntity<Addr> createAddr(@PathVariable int tripId, @RequestBody Addr addr) throws JsonProcessingException {
+    //     Trip foundTrip = tripService.findById(tripId);
+    //     if (foundTrip != null) {
+    //         Addr createdAddr = foundTrip.addAddr(addr);
+    //         return new ResponseEntity<>(createdAddr, HttpStatus.OK);
+    //     }
+    //     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    // }
 
     @PutMapping("/driver/trip/{tripId}/addr/{addrId}")
     public ResponseEntity<Addr> updateAddr(@PathVariable int tripId, @PathVariable int addrId) {

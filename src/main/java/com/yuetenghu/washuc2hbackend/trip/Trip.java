@@ -1,12 +1,17 @@
 package com.yuetenghu.washuc2hbackend.trip;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuetenghu.washuc2hbackend.addr.Addr;
 import com.yuetenghu.washuc2hbackend.PasscodeManager;
 import com.yuetenghu.washuc2hbackend.driver.Driver;
 
 import javax.persistence.*;
-import java.util.Calendar;
-import java.util.List;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.*;
 
 @Entity
 public class Trip {
@@ -56,11 +61,27 @@ public class Trip {
     public void setFinishTime(Calendar finishTime) {
         if (this.getFinishTime() == null) this.finishTime = finishTime;
     }
+    public void setIsRouteUpToDate(boolean isRouteUpToDate) {this.isRouteUpToDate = isRouteUpToDate;}
     public void setDriver(Driver driver) {this.driver = driver;};
 
-    public Addr addAddr(Addr addr) {
-        this.route.add(addr);
-        return addr;
+    public void afterAddAddr() throws Exception {
+        this.setIsRouteUpToDate(false);
+
+        // Call API of Route Optimisation (Will call back and trigger setRoute())
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestBody = objectMapper
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(this);
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8000/route-optimise"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                .build();
+
+        HttpResponse<?> response = client.send(request, HttpResponse.BodyHandlers.discarding());
+        // Now all addresses (incl new one) is added to MQ
     }
 
     public Addr findAddr(Addr addr) {
@@ -81,22 +102,17 @@ public class Trip {
         return true;
     }
 
-    // public Addr updateAddrStatus(Addr addr) {
-    //     addr.setArrivalTime(Calendar.getInstance());
-    //     return addr;
-    // }
-
-    // Async, publish to MQ
-    // Only use this after addAddr
-    private boolean planRoute() {
-        return true;
-    }
-
     // Used for callback by RoutePlanner
-    public boolean setRoute(List<Addr> route) {
-        this.route = route;
+    public void updateRoute(ArrayList<Integer> seqIds) {
+        // From: [6, 2, 4], To: {6: No1, 2: No2, 4: No3}
+        Map<Integer, Integer> addrIdToSeqId = new HashMap<>();
+        for (int seqId = 0; seqId < seqIds.size(); ++seqId) {
+            addrIdToSeqId.put(seqIds.get(seqId), seqId + 1);
+        }
+        for (Addr addr : this.route) {
+            addr.setSeqId(addrIdToSeqId.get(addr.getId()));
+        }
         this.isRouteUpToDate = true;
-        return true;
     }
 
 }

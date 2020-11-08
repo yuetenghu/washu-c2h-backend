@@ -1,5 +1,6 @@
 package com.yuetenghu.washuc2hbackend.addr;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yuetenghu.washuc2hbackend.trip.Trip;
 import com.yuetenghu.washuc2hbackend.trip.TripJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,16 @@ public class AddrResource {
 
 
     @PostMapping("jpa/rider/trip/{tripId}/addr/new")
-    public ResponseEntity<Addr> createAddr(@PathVariable int tripId, @RequestBody Addr addr) {
+    public ResponseEntity<Addr> createAddr(@PathVariable int tripId, @RequestBody Addr addr) throws Exception {
         Optional<Trip> foundTrip = tripService.findById(tripId);
         if (foundTrip.isPresent()) {
             addr.setTrip(foundTrip.get());
             addr.setBoardingTime();
             Addr createdAddr = addrService.save(addr);
+
+            // Update trip's route info
+            foundTrip.get().afterAddAddr();
+
             return new ResponseEntity<>(createdAddr, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

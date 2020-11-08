@@ -19,7 +19,7 @@ public class Addr {
     private boolean hasArrived;
     private Calendar boardingTime;  // TODO what type to use; Consider Timezone
     private Calendar arrivalTime;  // TODO what type to use; Consider Timezone
-    private static int idCounter = 1;
+    private int seqId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Trip trip;
@@ -43,6 +43,7 @@ public class Addr {
         this.hasArrived = false;
         this.boardingTime = Calendar.getInstance();
         this.arrivalTime = null;
+        this.seqId = -1;
     }
 
     // public Addr(int riderId, int tripId, String addr, double lat, double lng, Calendar boardingTime) {
@@ -66,6 +67,7 @@ public class Addr {
     public boolean getHasArrived() {return this.hasArrived;}
     public Calendar getBoardingTime() {return this.boardingTime;}
     public Calendar getArrivalTime() {return this.arrivalTime;}
+    public int getSeqId() {return this.seqId;}
 
     public void setBoardingTime() {this.setBoardingTime(Calendar.getInstance());}
     public void setBoardingTime(Calendar boardingTime) {
@@ -81,5 +83,8 @@ public class Addr {
             this.arrivalTime = arrivalTime;
             this.hasArrived = true;
         }
+    }
+    public void setSeqId(int seqId) {
+        this.seqId = seqId;
     }
 }
