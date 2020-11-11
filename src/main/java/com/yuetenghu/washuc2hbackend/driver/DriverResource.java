@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "https://localhost:4200")
+@CrossOrigin
+// @CrossOrigin(origins = "https://localhost:4200")
 public class DriverResource {
 
     @Autowired

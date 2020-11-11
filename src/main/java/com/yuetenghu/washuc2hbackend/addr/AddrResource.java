@@ -1,6 +1,5 @@
 package com.yuetenghu.washuc2hbackend.addr;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yuetenghu.washuc2hbackend.trip.Trip;
 import com.yuetenghu.washuc2hbackend.trip.TripJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "https://localhost:4200")
+@CrossOrigin
+// @CrossOrigin(origins = "https://localhost:4200")
 public class AddrResource {
 
     @Autowired
